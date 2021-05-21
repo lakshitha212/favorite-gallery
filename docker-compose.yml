@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: ./Dockerfile
+    image: frontend:react
+    container_name: favorite-gallery-frontend
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    
