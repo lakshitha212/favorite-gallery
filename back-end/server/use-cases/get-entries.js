@@ -5,16 +5,10 @@ export default function makeGetEntries({ backendDb, callRemoteAPI }) {
 
         const updated_entries = await remote_entries.entries.map(entry => ({ ...entry, _isFavourite: false }))
 
-        if(userToken){
-            return "yes"
+        if (userToken) {
+            return await backendDb.findById({ id: userToken })
         }
-        // console.log("no")
-        // console.log(updated_entries)
-        // if (!user_response.user) {
-        //     throw new Error(user_response.error)
-        // }
 
-        // return "no"
         return await backendDb.insert({
             entries: updated_entries,
             favoriteEntries: []
