@@ -466,7 +466,7 @@ class Home extends Component {
                                     <Card.Content
                                         style={{
                                             height: "100px",
-                                            // backgroundImage: `url(${card.picture})`,
+                                            backgroundImage: `url(${card.picture})`,
                                             backgroundSize: "cover",
                                         }}
                                     >{card.id}</Card.Content>
