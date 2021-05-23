@@ -8,7 +8,8 @@ import logger from 'morgan'
 import indexRouter from './routes/index'
 import cors from 'cors';
 import {
-  postTest
+  postTest,
+  postEntries
 } from './controllers'
 import makeCallback from './express-callback'
 
@@ -22,7 +23,8 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, '../public')))
 
 app.use('/', indexRouter)
-app.get('/create-test', makeCallback(postTest))
+// app.get('/create-test', makeCallback(postTest))
+app.post('/get-entries', makeCallback(postEntries))
 
 
 // catch 404 and forward to error handler

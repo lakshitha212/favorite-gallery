@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, { Component } from 'react';
-import { Grid, Image, Container, Segment, Divider, Icon, Header, Search, Button, Card, Placeholder } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
 
 class Favorite extends Component {
     constructor(props) {
@@ -46,7 +46,8 @@ class Favorite extends Component {
             <Card.Group doubling itemsPerRow={3} stackable>
                 {favorites &&
                     favorites.length > 0 &&
-                    favorites.map((favorite, index) => {
+                    _.map(favorites, (favorite, index) => {
+                        // favorites.map((favorite, index) => {
                         return (
 
                             <Card style={{ cursor: "move" }} key={index} id={`${index}-card`} onDrop={this.dropImage} onDragOver={this.imageDragOver}>

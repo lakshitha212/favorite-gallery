@@ -6,7 +6,7 @@ export default function makeBackendDB({ makeDb }) {
     const db = await makeDb()
     const createdAt = Date.now()
     const result = await db
-      .collection('test')
+      .collection('user')
       .insertOne({ _id, ...testInfo, createdAt })
     const { _id: id, ...insertedInfo } = result.ops[0]
     return { id, ...insertedInfo }

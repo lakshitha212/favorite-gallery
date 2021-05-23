@@ -1,12 +1,14 @@
 import _ from 'lodash'
 import React, { Component } from "react";
 import '../App.css';
-import { Grid, Image, Container, Segment, Divider, Icon, Header, Search, Button, Card, Placeholder } from 'semantic-ui-react'
+import { Grid, Segment, Divider, Icon, Header, Card } from 'semantic-ui-react'
 import Favorite from '../components/favorite';
+const BACKEND_URL = "http://localhost:8082/"
 
 class Home extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             cards: [
                 {
@@ -445,7 +447,30 @@ class Home extends Component {
     }
 
     componentDidMount = () => {
-
+        // console.log(localStorage.getItem("username"))
+        if (localStorage.getItem("userToken") === null) {
+            fetch(`${BACKEND_URL}get-entries`, {
+                method: 'post',
+                body: JSON.stringify({ userToken: localStorage.getItem("userToken") })
+            }).then(res => res.json()).then(
+                (result) => {
+                    console.log(result)
+                    localStorage.setItem('userToken', result.entries.id);
+                    // this.setState({
+                    //     isLoaded: true,
+                    //     items: result.items
+                    // });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+        } else {
+            alert('no');
+        }
     }
 
     updateImages = images => console.log('updated- images', images); // Write your own logic
@@ -460,19 +485,19 @@ class Home extends Component {
 
                 <Grid.Row verticalAlign='middle'>
                     <Grid.Column>
+                        <Header as='h2'>Make Your Selection By Clicking <Icon name='heart' /></Header>
                         <Card.Group doubling itemsPerRow={9} stackable >
                             {_.map(this.state.cards, (card) => (
                                 <Card raised key={card.id}>
                                     <Card.Content
                                         style={{
                                             height: "100px",
-                                            backgroundImage: `url(${card.picture})`,
+                                            // backgroundImage: `url(${card.picture})`,
                                             backgroundSize: "cover",
                                         }}
                                     >{card.id}</Card.Content>
                                     <Card.Content extra>
-                                        <a>
-                                            <Icon name='heart' /></a>
+                                        <Icon name='heart' className="red-heart" size="large" />
                                     </Card.Content>
                                 </Card>
                             ))}
@@ -480,7 +505,7 @@ class Home extends Component {
                     </Grid.Column>
 
                     <Grid.Column>
-                        <h1>Drag the Images to change positions</h1>
+                        <Header as='h2'>Drag the Images to change positions</Header>
                         <Favorite favorites={favorites} callback={this.updateImages} />
                     </Grid.Column>
                 </Grid.Row>
