@@ -1,5 +1,5 @@
 ## Usage
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+![Alt Text](./usage.gif)
 
 
 ## Installation
@@ -23,7 +23,11 @@ with docker
 
 - Exposed port 8082
   </br> URL : http://localhost:8082/
+  </br> Used Clean Architecture of Uncle Bob
 
 ## mongoDB Info
 
 - Exposed port 27017
+
+## UI Framework
+- Semantic UI React
