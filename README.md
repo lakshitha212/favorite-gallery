@@ -5,7 +5,7 @@
    ```sh
    git clone https://github.com/lakshitha212/favorite-gallery.git
    ```
-2. cd favorite-gallery
+2. ```sh cd favorite-gallery ```
 3. docker image prune -f
 4. docker-compose up --force-recreate --build -d
 
