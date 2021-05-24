@@ -10,7 +10,8 @@ import cors from 'cors';
 import {
   postTest,
   postEntries,
-  postEntry
+  postEntry,
+  rearrangeEntries
 } from './controllers'
 import makeCallback from './express-callback'
 
@@ -27,6 +28,7 @@ app.use('/', indexRouter)
 // app.get('/create-test', makeCallback(postTest))
 app.post('/get-entries', makeCallback(postEntries))
 app.post('/update-entry', makeCallback(postEntry))
+app.post('/sort-entries', makeCallback(rearrangeEntries))
 
 
 // catch 404 and forward to error handler

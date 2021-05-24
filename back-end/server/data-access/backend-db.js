@@ -20,10 +20,13 @@ export default function makeBackendDB({ makeDb }) {
 
   async function update({ id: _id, card: card }) {
     const db = await makeDb()
+
     const result = await db.collection(USER_COLLECTION).updateOne(
       { _id, "entries.id": card.id },
       { $set: { "entries.$._isFavourite": !card._isFavourite } }
     )
+
+
     if (card._isFavourite) {
       return await db.collection(USER_COLLECTION).updateOne(
         { _id, "entries.id": card.id },
@@ -38,10 +41,20 @@ export default function makeBackendDB({ makeDb }) {
     )
   }
 
+  async function sort({ id: _id, images: images }) {
+    const db = await makeDb()
+    const result = await db
+      .collection(USER_COLLECTION)
+      .updateOne({ _id }, { $set: { favoriteEntries: images } })
+    return result.modifiedCount > 0 ? { id: _id, favoriteEntries: images } : null
+  }
+
+
 
   return Object.freeze({
     insert,
     findById,
-    update
+    update,
+    sort
   })
 }

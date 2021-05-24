@@ -8,7 +8,7 @@ import '../App.css';
 import { Grid, Segment, Divider, Icon, Header, Card, Placeholder } from 'semantic-ui-react'
 import Favorite from '../components/favorite';
 const axios = require('axios');
-const BACKEND_URL = "http://localhost:3002/"
+const BACKEND_URL = "http://localhost:8082/"
 
 class Home extends Component {
     constructor(props) {
@@ -23,7 +23,8 @@ class Home extends Component {
             userToken: localStorage.getItem("userToken"),
             isLoading: true,
             cards: [],
-            favorites: []
+            favorites: [],
+            photoCount: 0
         };
         this.dragId = '';
     }
@@ -36,7 +37,6 @@ class Home extends Component {
 
 
     handleClick(event, card) {
-
         axios.post(`${BACKEND_URL}update-entry`, {
             userToken: localStorage.getItem("userToken"),
             card: card
@@ -63,8 +63,10 @@ class Home extends Component {
             this.setState({
                 isLoading: false,
                 cards: result.data.entries.entries,
-                favorites: result.data.entries.favoriteEntries
+                favorites: result.data.entries.favoriteEntries,
+                photoCount: result.data.entries.favoriteEntries.length
             });
+
             if (!localStorage.getItem("userToken")) {
                 localStorage.setItem('userToken', result.data.entries.id);
             }
@@ -84,20 +86,14 @@ class Home extends Component {
      * @param {*} images
      */
     rearrange = async (images) => {
-        console.log(images)
         await axios.post(`${BACKEND_URL}sort-entries`, {
             userToken: localStorage.getItem("userToken"),
             images: images
         }).then((result) => {
-            console.log(result)
-            // this.setState({
-            //     isLoading: false,
-            //     cards: result.data.entries.entries,
-            //     favorites: result.data.entries.favoriteEntries
-            // });
-            // if (!localStorage.getItem("userToken")) {
-            //     localStorage.setItem('userToken', result.data.entries.id);
-            // }
+            this.setState({
+                isLoading: false,
+                favorites: result.data.entries.favoriteEntries
+            });
 
         }).catch((e) => {
             console.error(e);
@@ -106,7 +102,6 @@ class Home extends Component {
                 e
             });
         });
-        console.log('updated- images', images)
     }
 
     /**
@@ -151,14 +146,13 @@ class Home extends Component {
             favorites.splice(dropIndex, 0, dragObject);
             this.setState({ favorites });
             this.rearrange(favorites)
-            // this.props.callback(favorites);
         }
     };
 
 
     render() {
 
-        const { favorites, cards, isLoading } = this.state
+        const { favorites, cards, isLoading, photoCount } = this.state
 
         return <><Segment placeholder>
             <Grid columns={2} stackable textAlign='center'>
@@ -184,10 +178,10 @@ class Home extends Component {
                                         <Card.Content
                                             style={{
                                                 height: "100px",
-                                                // backgroundImage: `url(${card.picture})`,
+                                                backgroundImage: `url(${card.picture})`,
                                                 backgroundSize: "cover",
                                             }}
-                                        >{card.id}</Card.Content>
+                                        ></Card.Content>
                                     )}
 
                                     {isLoading ? (
@@ -208,7 +202,7 @@ class Home extends Component {
                         {isLoading ? (<Placeholder>
                             <Placeholder.Line length='full' />
                         </Placeholder>) :
-                            ((favorites && favorites.length === 0) ? (<Header as='h2'> There is no selected items to display! </Header>) : (<Header as='h2'>Drag the Images to change positions</Header>))}
+                            ((favorites && favorites.length === 0) ? (<Header as='h2'> There is no selected items to display! </Header>) : (<Header as='h2'>Drag the Images to change positions - {this.state.photoCount}</Header>))}
 
                         <Card.Group doubling itemsPerRow={3} stackable>
                             {favorites &&
@@ -231,9 +225,9 @@ class Home extends Component {
                                                 style={{
                                                     height: "200px",
                                                     backgroundSize: "cover",
-                                                    // backgroundImage: `url(${favorite.picture})`,
+                                                    backgroundImage: `url(${favorite.picture})`,
                                                 }}
-                                            >{favorite.id}</Card.Content>
+                                            ></Card.Content>
                                         )}
                                     </Card>
                                 )
