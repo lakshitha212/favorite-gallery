@@ -1,5 +1,5 @@
 ### Installation
-## with docker
+with docker
 
 1. Clone the repo
    ```sh
