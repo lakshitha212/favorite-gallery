@@ -2,6 +2,7 @@ export default function makePostEntry({ updateEntry }) {
     return async function sendResponse(httpRequest) {
         try {
             const { source = {}, userToken, card } = httpRequest.body
+            // console.log(userToken)
             source.ip = httpRequest.ip
             source.browser = httpRequest.headers['User-Agent']
             if (httpRequest.headers['Referer']) {

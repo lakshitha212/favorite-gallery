@@ -8,7 +8,7 @@ export default function makeUpdateEntry({ backendDb }) {
         // if (userToken) {
         //     return await userDb.findById({ id: userToken })
         // }
-        console.log(card)
+        // console.log(card)
         return await backendDb.update({
             id: userToken,
             card: card

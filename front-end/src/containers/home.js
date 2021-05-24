@@ -1,80 +1,31 @@
+/**
+ * {BACKEND_URL} - Keep backend API
+ * 
+ */
 import _ from 'lodash'
 import React, { Component } from "react";
 import '../App.css';
 import { Grid, Segment, Divider, Icon, Header, Card, Placeholder } from 'semantic-ui-react'
 import Favorite from '../components/favorite';
-const BACKEND_URL = "http://localhost:8082/"
+const axios = require('axios');
+const BACKEND_URL = "http://localhost:3002/"
 
 class Home extends Component {
     constructor(props) {
         super(props);
-
+        /**
+         * Manage state
+         * @param {isLoading} - Simple indicator 
+         * @param {card} - Object array. All the images are keep here
+         * @param {favorites} - Object array. All the selected images are keep here
+         */
         this.state = {
+            userToken: localStorage.getItem("userToken"),
             isLoading: true,
             cards: [],
-            favorites: [
-                {
-                    id: 204900032,
-                    message: "",
-                    picture: "https://www.filepicker.io/api/file/0KHHtW5pQeunZJiyJb8V",
-                    pictureSmall: "",
-                    pictureMedium: "",
-                    pictureStored: "",
-                    timestamp: 1578391381,
-                    type: "gallery"
-                },
-                {
-                    id: 204900033,
-                    message: "",
-                    picture: "https://www.filepicker.io/api/file/BFYcwcixRSGlV7MOwI85",
-                    pictureSmall: "",
-                    pictureMedium: "",
-                    pictureStored: "",
-                    timestamp: 1578391381,
-                    type: "gallery"
-                },
-                {
-                    id: 204900034,
-                    message: "",
-                    picture: "https://www.filepicker.io/api/file/EFOpZXR9TsWTWhF4F4SX",
-                    pictureSmall: "",
-                    pictureMedium: "",
-                    pictureStored: "",
-                    timestamp: 1578391381,
-                    type: "gallery"
-                },
-                {
-                    id: 204900035,
-                    message: "",
-                    picture: "https://www.filepicker.io/api/file/z36zDtrRuUJ3HAOw4uEg",
-                    pictureSmall: "",
-                    pictureMedium: "",
-                    pictureStored: "",
-                    timestamp: 1578391381,
-                    type: "gallery"
-                },
-                {
-                    id: 204900036,
-                    message: "",
-                    picture: "https://www.filepicker.io/api/file/wR1dtVwSLqMW5ueGUUug",
-                    pictureSmall: "",
-                    pictureMedium: "",
-                    pictureStored: "",
-                    timestamp: 1578391381,
-                    type: "gallery"
-                },
-                {
-                    id: 204900037,
-                    message: "",
-                    picture: "https://www.filepicker.io/api/file/EH84oM3DTRSvP9dUPKCm",
-                    pictureSmall: "",
-                    pictureMedium: "",
-                    pictureStored: "",
-                    timestamp: 1578391381,
-                    type: "favorite"
-                }
-            ]
+            favorites: []
         };
+        this.dragId = '';
     }
 
     componentDidMount = () => {
@@ -82,60 +33,128 @@ class Home extends Component {
 
     }
 
-    updateImages = images => console.log('updated- images', images); // Write your own logic
+
 
     handleClick(event, card) {
-        const { favorites } = this.state
-        console.log(card)
-        fetch(`${BACKEND_URL}update-entry`, {
-            method: 'post',
-            body: JSON.stringify({ userToken: localStorage.getItem("userToken"), card: card })
-        }).then(res => res.json()).then(
-            (result) => {
-                console.log(result)
-                this.setState(prevState => ({ cards: prevState.cards.map(el => (el.id === card.id ? { ...el, _isFavourite: (card._isFavourite ? false : true) } : el)) }))
-                this.get_entries()
-                // localStorage.setItem('userToken', result.entries.id);
-                // this.setState({
-                //     isLoading: false,
-                //     cards: result.entries.entries
-                // });
-            },
-            (error) => {
-                this.setState({
-                    isLoading: false,
-                    error
-                });
-            }
-        )
 
-       
+        axios.post(`${BACKEND_URL}update-entry`, {
+            userToken: localStorage.getItem("userToken"),
+            card: card
+        }).then((result) => {
+            // this.setState(prevState => ({ cards: prevState.cards.map(el => (el.id === card.id ? { ...el, _isFavourite: (card._isFavourite ? false : true) } : el)) }))
+            this.get_entries()
+
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                isLoading: false,
+                e
+            });
+        });
     }
 
     get_entries = async () => {
         this.setState({
             isLoading: true,
         });
-        fetch(`${BACKEND_URL}get-entries`, {
-            method: 'post',
-            body: JSON.stringify({ userToken: localStorage.getItem("userToken") })
-        }).then(res => res.json()).then(
-            (result) => {
-                console.log(result)
-                localStorage.setItem('userToken', result.entries.id);
-                this.setState({
-                    isLoading: false,
-                    cards: result.entries.entries
-                });
-            },
-            (error) => {
-                this.setState({
-                    isLoading: false,
-                    error
-                });
+        await axios.post(`${BACKEND_URL}get-entries`, {
+            userToken: localStorage.getItem("userToken")
+        }).then((result) => {
+            this.setState({
+                isLoading: false,
+                cards: result.data.entries.entries,
+                favorites: result.data.entries.favoriteEntries
+            });
+            if (!localStorage.getItem("userToken")) {
+                localStorage.setItem('userToken', result.data.entries.id);
             }
-        )
+
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                isLoading: false,
+                e
+            });
+        });
+
     };
+
+    /**
+     * 
+     * @param {*} images
+     */
+    rearrange = async (images) => {
+        console.log(images)
+        await axios.post(`${BACKEND_URL}sort-entries`, {
+            userToken: localStorage.getItem("userToken"),
+            images: images
+        }).then((result) => {
+            console.log(result)
+            // this.setState({
+            //     isLoading: false,
+            //     cards: result.data.entries.entries,
+            //     favorites: result.data.entries.favoriteEntries
+            // });
+            // if (!localStorage.getItem("userToken")) {
+            //     localStorage.setItem('userToken', result.data.entries.id);
+            // }
+
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                isLoading: false,
+                e
+            });
+        });
+        console.log('updated- images', images)
+    }
+
+    /**
+     * 
+     * @param {*} ev 
+     * @returns 
+     */
+    imageDragOver = ev => ev.preventDefault();
+
+    /**
+     * 
+     * @param {*} ev 
+     * @returns 
+     */
+
+    imageDragStart = ev => (this.dragId = ev.target.id);
+
+    /**
+     * 
+     * @param {*} ev 
+     * @description sorting image grid
+     */
+
+    dropImage = ev => {
+        ev.preventDefault();
+        const dragElement = this.dragId.split('-');
+        let dragIndex = '';
+        if (dragElement.length > 1) {
+            dragIndex = dragElement[0];
+        }
+
+        const dropElement = ev.target.id.split('-');
+        let dropIndex = '';
+        if (dropElement.length > 1) {
+            dropIndex = dropElement[0];
+        }
+
+        if (dragIndex !== '' && dropIndex !== '') {
+            const { favorites } = this.state;
+            const dragObject = favorites[dragIndex];
+            favorites.splice(dragIndex, 1);
+            favorites.splice(dropIndex, 0, dragObject);
+            this.setState({ favorites });
+            this.rearrange(favorites)
+            // this.props.callback(favorites);
+        }
+    };
+
 
     render() {
 
@@ -148,7 +167,12 @@ class Home extends Component {
 
                 <Grid.Row verticalAlign='middle'>
                     <Grid.Column>
-                        <Header as='h2'>Make Your Selection By Clicking <Icon name='heart' /></Header>
+                        {isLoading ? (<Placeholder>
+                            <Placeholder.Line length='full' />
+                        </Placeholder>) :
+                            (<Header as='h2'>Make Your Selection By Clicking <Icon name='heart' /></Header>)}
+
+
                         <Card.Group doubling itemsPerRow={9} stackable >
                             {_.map(cards, (card) => (
                                 <Card raised key={card.id}>
@@ -165,18 +189,61 @@ class Home extends Component {
                                             }}
                                         >{card.id}</Card.Content>
                                     )}
-                                    <Card.Content extra>
-                                        {card._isFavourite ? (<Icon name='heart' className="red-heart" color="red" onClick={(e) => this.handleClick(e, card)} size="large" />) : (<Icon name='heart' className="red-heart" size="large" onClick={(e) => this.handleClick(e, card)} />)}
 
-                                    </Card.Content>
+                                    {isLoading ? (
+                                        <Placeholder>
+                                        </Placeholder>
+                                    ) : (
+                                        <Card.Content extra>
+                                            {card._isFavourite ? (<Icon name='heart' className="red-heart" color="red" onClick={(e) => this.handleClick(e, card)} size="large" />) : (<Icon name='heart' className="red-heart" size="large" onClick={(e) => this.handleClick(e, card)} />)}
+
+                                        </Card.Content>
+                                    )}
                                 </Card>
                             ))}
                         </Card.Group>
                     </Grid.Column>
 
                     <Grid.Column>
-                        <Header as='h2'>Drag the Images to change positions</Header>
-                        <Favorite favorites={favorites} callback={this.updateImages} />
+                        {isLoading ? (<Placeholder>
+                            <Placeholder.Line length='full' />
+                        </Placeholder>) :
+                            ((favorites && favorites.length === 0) ? (<Header as='h2'> There is no selected items to display! </Header>) : (<Header as='h2'>Drag the Images to change positions</Header>))}
+
+                        <Card.Group doubling itemsPerRow={3} stackable>
+                            {favorites &&
+                                favorites.length > 0 &&
+                                _.map(favorites, (favorite, index) => (
+
+                                    <Card style={{ cursor: "move" }} key={index} id={`${index}-card`} onDrop={this.dropImage} onDragOver={this.imageDragOver}>
+
+
+                                        {isLoading ? (
+                                            <Placeholder>
+                                                <Placeholder.Image square />
+                                            </Placeholder>
+                                        ) : (
+                                            <Card.Content
+                                                id={`${index}-img`}
+                                                draggable={true}
+                                                onDragStart={this.imageDragStart}
+                                                data-holder-rendered='true'
+                                                style={{
+                                                    height: "200px",
+                                                    backgroundSize: "cover",
+                                                    // backgroundImage: `url(${favorite.picture})`,
+                                                }}
+                                            >{favorite.id}</Card.Content>
+                                        )}
+                                    </Card>
+                                )
+                                )}
+
+
+
+
+                        </Card.Group>
+                        {/* <Favorite favorites={this.state.favorites} callback={this.updateImages} /> */}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

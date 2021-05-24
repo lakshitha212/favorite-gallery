@@ -1,5 +1,5 @@
 import Id from '../Id'
-const USER_COLLECTION = 'user'
+const USER_COLLECTION = 'tstcol'
 export default function makeBackendDB({ makeDb }) {
 
   async function insert({ id: _id = Id.makeId(), ...testInfo }) {
@@ -24,10 +24,18 @@ export default function makeBackendDB({ makeDb }) {
       { _id, "entries.id": card.id },
       { $set: { "entries.$._isFavourite": !card._isFavourite } }
     )
-    // const result = await db
-    //   .collection('user')
-    //   .updateOne({ _id }, { $set: { ...userInfo } })
-    return result.modifiedCount > 0 ? { id: _id, ...card } : null
+    if (card._isFavourite) {
+      return await db.collection(USER_COLLECTION).updateOne(
+        { _id, "entries.id": card.id },
+        { $pull: { favoriteEntries: { id: card.id } } }
+      )
+    }
+
+
+    return await db.collection(USER_COLLECTION).updateOne(
+      { _id },
+      { $push: { favoriteEntries: { ...card, _isFavourite: true } } }
+    )
   }
 
 

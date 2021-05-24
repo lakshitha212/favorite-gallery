@@ -8,7 +8,7 @@ class Favorite extends Component {
         const { favorites } = props;
         this.state = {
             favorites
-        };
+        };     
         this.dragId = '';
     }
 
