@@ -1,7 +1,14 @@
-# favorite-gallery
-Docker Commands:
-docker image prune -f
-docker-compose up --force-recreate --build -d
+### Installation
+## with docker
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/lakshitha212/favorite-gallery.git
+   ```
+2. cd favorite-gallery
+3. docker image prune -f
+4. docker-compose up --force-recreate --build -d
+
 
 ## Front End Info
 
