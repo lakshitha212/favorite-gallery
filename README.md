@@ -1,4 +1,8 @@
-### Installation
+## Usage
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
+
+## Installation
 with docker
 
 1. Clone the repo
@@ -18,7 +22,7 @@ with docker
 ## Back End Service Info
 
 - Exposed port 8082
-  URL : http://localhost:8082/
+  </br> URL : http://localhost:8082/
 
 ## mongoDB Info
 
