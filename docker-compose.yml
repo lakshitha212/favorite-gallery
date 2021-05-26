@@ -45,7 +45,6 @@ services:
       - "8082:3002"
     volumes:
       - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
     networks:
       - app-network
     depends_on:
@@ -58,7 +57,7 @@ services:
     image: codfish/swagger
     container_name: favorite-gallery-apidoc
     volumes:
-      - ./swagger.yaml:/app/swagger.yaml:delegated
+      - .:/home/swagger/app
     environment:
       VIRTUAL_HOST: favorite-gallery-apidoc.docker
     expose:
