@@ -1,0 +1,92 @@
+openapi: 3.0.0
+
+info:
+  version: "1.0.0"
+  title: Test swagger doc
+
+tags:
+  - name: Health Check
+
+paths:
+  /health-check:
+    get:
+      tags:
+        - Health Check
+      description: Conducts health check.
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        404:
+          $ref: '#/components/responses/404'
+        504:
+          $ref: '#/components/responses/504'
+
+components:
+  schemas:
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+
+    Error:
+      description: Basic error response body
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Sample error message text
+
+  responses:
+    401:
+      description: Unauthorized
+      examples:
+        application/json:
+          message: You're not authorized
+      headers:
+        Status:
+          description: 401 Unauthorized
+          type: string
+      schema:
+        $ref: '#/components/schemas/Error'
+    404:
+      description: Entity not found
+      examples:
+        application/json:
+          message: Not Found
+      headers:
+        Status:
+          description: 404 Not Found
+          type: string
+      schema:
+        $ref: '#/components/schemas/Error'
+    422:
+      description: Unprocessable Entity
+      headers:
+        Status:
+          description: 422 Unprocessable Entity (Validation Failure)
+          type: string
+      schema:
+        $ref: '#/components/schemas/ValidationError'
+    500:
+      description: Internal Server Error
+      headers:
+        Status:
+          description: 500 Internal Server Error
+          type: string
+      schema:
+        $ref: '#/components/schemas/Error'
+    504:
+      description: Blockchain returned unexpected response'
+      headers:
+        Status:
+          description: 504 Blockchain returned unexpected response'
+          type: string
+      schema:
+        $ref: '#/components/schemas/Error'

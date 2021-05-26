@@ -51,6 +51,22 @@ services:
     depends_on:
       - mongo
 
+  swagger:
+    build:
+      context: ./api-doc
+      dockerfile: ./Dockerfile
+    image: codfish/swagger
+    container_name: favorite-gallery-apidoc
+    volumes:
+      - ./swagger.yaml:/app/swagger.yaml:delegated
+    environment:
+      VIRTUAL_HOST: favorite-gallery-apidoc.docker
+    expose:
+      - "3003"
+    ports:
+      - "8083:3003"
+
+
 networks:
   app-network:
     driver: bridge
