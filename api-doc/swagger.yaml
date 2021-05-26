@@ -1,13 +1,47 @@
 openapi: 3.0.0
 
 info:
-  version: "1.0.0"
-  title: Test swagger doc
+  description: >-
+    : backend related services are running on 8082
+  version: 1.0.0
+  title: Favorite Gallery API Doc
+  contact:
+    email: chameera.lakshitha212@gmail.com
+host: 127.0.0.1:8082
+basePath: /
+
+servers:
+  - url: http://127.0.0.1
 
 tags:
-  - name: Health Check
+  - name: User Service
+    description: Operations related to user service
+schemes:
+  - http
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 
 paths:
+  ':8082/get-entries':
+    post:
+      tags:
+        - User Service
+      summary: List all the images
+      description: Returns all the images
+      operationId: listImages
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+        '400':
+          description: error message
   /health-check:
     get:
       tags:
