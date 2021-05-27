@@ -34,7 +34,8 @@ import {
   postEntries,
   postEntry,
   rearrangeEntries,
-  readUser
+  readUser,
+  fetchFavorites
 } from './controllers'
 import makeCallback from './express-callback'
 
@@ -46,23 +47,6 @@ app.use(cors())
 
 app.use(bodyParser.json())
 
-// app.use(function (req, res, next) {
-//   if (req.path === '/get-entries') {
-//     const { userToken } = req.body;
-//     console.log(userToken)
-//     redisClient.get(userToken, (error, cachedData) => {
-//       console.log(error)
-//       if (error) throw error;
-//       if (cachedData != null) {
-//         res.send(setResponse(userToken, cachedData));
-//       } else {
-//         next();
-//       }
-//     });
-//   }
-//   next();
-// });
-
 app.use(express.static(path.join(__dirname, '../public')))
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use('/', indexRouter)
@@ -71,6 +55,7 @@ app.get('/get-entries', makeCallback(postEntries))
 app.post('/update-entry', makeCallback(postEntry))
 app.post('/sort-entries', makeCallback(rearrangeEntries))
 app.post('/get-user', makeCallback(readUser))
+app.get('/get-favorites', makeCallback(fetchFavorites))
 
 
 // catch 404 and forward to error handler

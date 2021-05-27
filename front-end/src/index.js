@@ -2,14 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css'
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+import store from "./redux/store";
+import { Provider } from "react-redux";
+import FavoriteApp from "./FavoriteApp";
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <FavoriteApp />
+  </Provider>,
   document.getElementById('root')
 );
 

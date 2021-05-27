@@ -3,6 +3,7 @@ import makeGetEntries from './get-entries'
 import makeUpdateEntry from './update-entry'
 import makeSortEntries from './sort-entries'
 import makeGetUser from './get-user'
+import makeGetFavorites from './get-favorites'
 
 import backendDb from '../data-access'
 
@@ -13,13 +14,15 @@ const getEntries = makeGetEntries({ backendDb, callRemoteAPI })
 const updateEntry = makeUpdateEntry({ backendDb })
 const sortEntries = makeSortEntries({ backendDb })
 const getUser = makeGetUser({ backendDb, callRemoteAPI })
+const getFavorites = makeGetFavorites({ backendDb })
 
 const backendService = Object.freeze({
     createTest,
     getEntries,
     updateEntry,
     sortEntries,
-    getUser
+    getUser,
+    getFavorites
 })
 
 export default backendService
@@ -29,5 +32,6 @@ export {
     getEntries,
     updateEntry,
     sortEntries,
-    getUser
+    getUser,
+    getFavorites
 }

@@ -4,7 +4,8 @@ import {
   getEntries,
   updateEntry,
   sortEntries,
-  getUser
+  getUser,
+  getFavorites
 } from '../use-cases'
 
 import notFound from './not-found'
@@ -17,12 +18,14 @@ import makePostEntries from './get-entries'
 import makePostEntry from './update-entry'
 import makeSortEntries from './sort-entries'
 import makeGetUser from './get-user'
+import makeGetFavorites from './get-favorites'
 
 const postTest = makePostCreateTest({ createTest })
 const postEntries = makePostEntries({ getEntries, client })
 const postEntry = makePostEntry({ updateEntry })
 const rearrangeEntries = makeSortEntries({ sortEntries })
 const readUser = makeGetUser({ getUser })
+const fetchFavorites = makeGetFavorites({ getFavorites })
 
 
 const backendController = Object.freeze({
@@ -31,7 +34,8 @@ const backendController = Object.freeze({
   postEntry,
   rearrangeEntries,
   readUser,
-  notFound
+  notFound,
+  fetchFavorites
 })
 
 export default backendController
@@ -41,5 +45,6 @@ export {
   postEntry,
   rearrangeEntries,
   readUser,
-  notFound
+  notFound,
+  fetchFavorites
 }

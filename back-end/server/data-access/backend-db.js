@@ -28,17 +28,20 @@ export default function makeBackendDB({ makeDb }) {
 
 
     if (card._isFavourite) {
-      return await db.collection(USER_COLLECTION).updateOne(
+      await db.collection(USER_COLLECTION).updateOne(
         { _id, "entries.id": card.id },
         { $pull: { favoriteEntries: { id: card.id } } }
       )
+      return await db.collection(USER_COLLECTION).findOne({ _id })
     }
 
 
-    return await db.collection(USER_COLLECTION).updateOne(
+    await db.collection(USER_COLLECTION).updateOne(
       { _id },
       { $push: { favoriteEntries: { ...card, _isFavourite: true } } }
     )
+    return await db.collection(USER_COLLECTION).findOne({ _id })
+
   }
 
   async function sort({ id: _id, images: images }) {

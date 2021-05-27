@@ -19,10 +19,12 @@ module.exports = function makeExpressCallback(controller) {
         if (httpResponse.headers) {
           res.set(httpResponse.headers)
         }
-        // here you can define period in second, this one is 5 minutes
-        const period = 60 * 5
-        if (req.method == 'GET') {
-          res.set('Cache-control', `public, max-age=${period}`)
+        // here you can define cache period
+        if (req.path == '/get-entries') {
+          res.set({
+            "Cache-Control": "public, max-age=86400",
+            "Expires": new Date(Date.now() + 86400000).toUTCString()
+          })
         } else {
           // for the other requests set strict no caching parameters
           res.set('Cache-control', `no-store`)
