@@ -18,7 +18,7 @@ schemes:
   - http
 
 paths:
-  ':8082/get-user':
+  /get-user:
     post:
       tags:
         - User Service
@@ -100,7 +100,7 @@ paths:
             properties:
               error:
                 type: string
-  ':8082/get-entries':
+  /get-entries:
     get:
       tags:
         - User Service
@@ -183,7 +183,7 @@ paths:
             properties:
               error:
                 type: string
-  ':8082/update-entry':
+  /update-entry:
     put:
       tags:
         - User Service
@@ -292,7 +292,7 @@ paths:
             properties:
               error:
                 type: string
-  ':8082/sort-entries':
+  /sort-entries:
     post:
       tags:
         - User Service
