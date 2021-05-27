@@ -38,6 +38,7 @@ with docker
 ## Swagger API Doc Info
 
 - Exposed port 8083
+</br> URL : http://localhost:8083/
 
 ## UI Framework
 - Semantic UI React
