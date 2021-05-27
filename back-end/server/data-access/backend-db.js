@@ -20,7 +20,11 @@ export default function makeBackendDB({ makeDb }) {
 
   async function update({ id: _id, card: card }) {
     const db = await makeDb()
+    const res = await this.findById({ id: _id })
 
+    if(!card._isFavourite && res.favoriteEntries.length===9){
+      throw new Error('Your gallery image count exceeded. You can only add images up to 9!')
+    }
     const result = await db.collection(USER_COLLECTION).updateOne(
       { _id, "entries.id": card.id },
       { $set: { "entries.$._isFavourite": !card._isFavourite } }

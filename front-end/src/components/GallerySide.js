@@ -46,11 +46,12 @@ class GallerySide extends Component {
             addFavoriteHandler(result.data.entries, "click")
 
         }).catch((e) => {
-            console.error(e);
+
             this.setState({
                 isLoading: false,
                 e
             });
+            alert(e.response.data.error)
         });
     }
 
