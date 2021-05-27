@@ -60,6 +60,7 @@ class Home extends Component {
         });
         await axios.get(`${BACKEND_URL}get-entries?userToken=${localStorage.getItem("userToken")}`, {
         }).then((result) => {
+            console.log(result)
             this.setState({
                 isLoading: false,
                 cards: result.data.entries.entries,

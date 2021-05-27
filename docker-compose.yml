@@ -11,8 +11,6 @@ services:
       - "3000"
     ports:
       - "3000:3000"
-  
-
 
   mongo:
     image: mongo:latest
@@ -26,6 +24,17 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: "redis:alpine"
+    container_name: favorite-gallery-redis
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    networks:
+      - app-network
+    
   backend:
     build:
       context: ./back-end
@@ -64,15 +73,6 @@ services:
       - "3003"
     ports:
       - "8083:3003"
-
-  redis:
-    image: "redis:alpine"
-    container_name: favorite-gallery-redis
-    expose:
-      - "6379"
-    ports:
-      - "6379:6379"
-
 
 networks:
   app-network:
