@@ -4,11 +4,11 @@
  */
 import _ from 'lodash'
 import React, { Component } from "react";
+import { BACKEND_URL } from '../redux/constants'
 import '../App.css';
 import { Grid, Header, Card } from 'semantic-ui-react'
 
 const axios = require('axios');
-const BACKEND_URL = "http://localhost:8082/"
 
 class FavoriteSide extends Component {
     constructor(props) {

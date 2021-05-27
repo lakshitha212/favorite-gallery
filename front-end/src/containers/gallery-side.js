@@ -4,7 +4,7 @@ import { addToFavorite } from '../redux/actions'
 
 const mapStateToProps = state => ({})
 const mapDispatchToProps = dispatch => ({
-    addFavoriteHandler: data => dispatch(addToFavorite(data))
+    addFavoriteHandler: (data, actionType) => dispatch(addToFavorite(data, actionType))
     
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GallerySide)

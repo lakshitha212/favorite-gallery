@@ -3,20 +3,11 @@ import express from 'express'
 import dotenv from 'dotenv'
 import path from 'path'
 import bodyParser from 'body-parser'
-import cookieParser from 'cookie-parser';
 
 import indexRouter from './routes/index'
 import cors from 'cors';
 
-// const redis = require("redis");
-
-// //Create Redis client on Redis port
-// const redisPort = process.env.REDIS_PORT || 6379
-// const redisClient = redis.createClient(redisPort);
-
-// redisClient.on("error", (err) => {
-//   console.log(err);
-// })
+import compression from "compression";
 
 /**
  * Enable Loggin
@@ -44,7 +35,7 @@ dotenv.config()
 var app = express()
 
 app.use(cors())
-
+app.use(compression());
 app.use(bodyParser.json())
 
 app.use(express.static(path.join(__dirname, '../public')))
@@ -52,7 +43,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 app.use('/', indexRouter)
 
 app.get('/get-entries', makeCallback(postEntries))
-app.post('/update-entry', makeCallback(postEntry))
+app.put('/update-entry', makeCallback(postEntry))
 app.post('/sort-entries', makeCallback(rearrangeEntries))
 app.post('/get-user', makeCallback(readUser))
 app.get('/get-favorites', makeCallback(fetchFavorites))

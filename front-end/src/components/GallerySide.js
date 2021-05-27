@@ -4,13 +4,13 @@
  */
 import _ from 'lodash'
 import React, { Component } from "react";
+import { BACKEND_URL } from '../redux/constants'
 
 import '../App.css';
 import { Grid, Icon, Header, Card, Placeholder } from 'semantic-ui-react'
+
+// define HttpClient
 const axios = require('axios');
-const BACKEND_URL = "http://localhost:8082/"
-
-
 class GallerySide extends Component {
     constructor(props) {
         super(props);
@@ -39,12 +39,11 @@ class GallerySide extends Component {
     handleClick(event, card) {
         const { addFavoriteHandler } = this.props
 
-        axios.post(`${BACKEND_URL}update-entry`, {
-            userToken: localStorage.getItem("userToken"),
+        axios.put(`${BACKEND_URL}update-entry?userToken=${localStorage.getItem("userToken")}`, {
             card: card
         }).then((result) => {
             this.setState(prevState => ({ cards: prevState.cards.map(el => (el.id === card.id ? { ...el, _isFavourite: (card._isFavourite ? false : true) } : el)) }))
-            addFavoriteHandler(result.data.entries)
+            addFavoriteHandler(result.data.entries, "click")
 
         }).catch((e) => {
             console.error(e);

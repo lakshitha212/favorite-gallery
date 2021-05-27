@@ -21,10 +21,14 @@ module.exports = function makeExpressCallback(controller) {
         }
         // here you can define cache period
         if (req.path == '/get-entries') {
-          res.set({
-            "Cache-Control": "public, max-age=86400",
-            "Expires": new Date(Date.now() + 86400000).toUTCString()
-          })
+          const date = new Date();
+          date.setFullYear(date.getFullYear() + 1);
+          res.setHeader("Expires", date.toUTCString());
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+          // res.set({
+          //   "Cache-Control": "public, max-age=86400",
+          //   "Expires": new Date(Date.now() + 86400000).toUTCString()
+          // })
         } else {
           // for the other requests set strict no caching parameters
           res.set('Cache-control', `no-store`)

@@ -8,7 +8,12 @@ export default function makeSortEntries({ sortEntries }) {
             if (httpRequest.headers['Referer']) {
                 source.referrer = httpRequest.headers['Referer']
             }
-
+            if (!userToken) {
+                throw new Error('User token is required')
+            }
+            if (!images) {
+                throw new Error('Images are required')
+            }
             const entries = await sortEntries(userToken, images)
 
             return {

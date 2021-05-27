@@ -1,126 +1,445 @@
-openapi: 3.0.0
-
+swagger: '2.0'
 info:
   description: >-
-    : backend related services are running on 8082
+    Please note that different services are running on different docker
+    containers. Hence please use the correct port for relevant service. example
+    : user related services are running on 8082
   version: 1.0.0
   title: Favorite Gallery API Doc
   contact:
     email: chameera.lakshitha212@gmail.com
 host: 127.0.0.1:8082
 basePath: /
-
-servers:
-  - url: http://127.0.0.1
-
 tags:
   - name: User Service
     description: Operations related to user service
+
 schemes:
   - http
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
 
 paths:
-  ':8082/get-entries':
+  ':8082/get-user':
     post:
       tags:
         - User Service
-      summary: List all the images
-      description: Returns all the images
-      operationId: listImages
+      summary: Get Single User
+      description: Returns a user object. If cannot find user, this will create and returns a user object
+      operationId: getUser
       produces:
         - application/json
-      parameters: []
+      parameters:
+        - in: body
+          name: body
+          description: userToken
+          schema:
+            type: object
+            properties:
+              userToken:
+                type: String
+            example:
+              userToken: some_user_id
       responses:
-        '200':
+        '201':
           description: successful operation
           schema:
             type: object
+            properties:
+              user:
+                type: object
+                properties: 
+                  _id:
+                    type: string
+                  entries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+                  favoriteEntries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+                  createdAt:
+                    type: number
         '400':
           description: error message
-  /health-check:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  ':8082/get-entries':
     get:
       tags:
-        - Health Check
-      description: Conducts health check.
+        - User Service
+      summary: List All User Entries
+      description: Returns all entries with any user id
+      operationId: getEntries
+      produces:
+        - application/json
+      parameters: 
+        - in: query
+          name: userToken
+          required: true
+          schema:
+            type: string
+          description: The unique ID
       responses:
-        200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HealthCheck'
-        404:
-          $ref: '#/components/responses/404'
-        504:
-          $ref: '#/components/responses/504'
-
-components:
-  schemas:
-    HealthCheck:
-      type: object
-      properties:
-        status:
-          type: string
-          example: OK
-
-    Error:
-      description: Basic error response body
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message
-          example: Sample error message text
-
-  responses:
-    401:
-      description: Unauthorized
-      examples:
-        application/json:
-          message: You're not authorized
-      headers:
-        Status:
-          description: 401 Unauthorized
-          type: string
-      schema:
-        $ref: '#/components/schemas/Error'
-    404:
-      description: Entity not found
-      examples:
-        application/json:
-          message: Not Found
-      headers:
-        Status:
-          description: 404 Not Found
-          type: string
-      schema:
-        $ref: '#/components/schemas/Error'
-    422:
-      description: Unprocessable Entity
-      headers:
-        Status:
-          description: 422 Unprocessable Entity (Validation Failure)
-          type: string
-      schema:
-        $ref: '#/components/schemas/ValidationError'
-    500:
-      description: Internal Server Error
-      headers:
-        Status:
-          description: 500 Internal Server Error
-          type: string
-      schema:
-        $ref: '#/components/schemas/Error'
-    504:
-      description: Blockchain returned unexpected response'
-      headers:
-        Status:
-          description: 504 Blockchain returned unexpected response'
-          type: string
-      schema:
-        $ref: '#/components/schemas/Error'
+        '201':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              meta_data:
+                type: string
+                enum:
+                  - from cache
+                  - from server
+              entries:
+                type: object
+                properties: 
+                  _id:
+                    type: string
+                  entries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+                  favoriteEntries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+                  createdAt:
+                    type: number
+        '400':
+          description: error message
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  ':8082/update-entry':
+    put:
+      tags:
+        - User Service
+      summary: Update User Entry Details
+      description: 
+      operationId: updateEntry
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: userToken
+          required: true
+          schema:
+            type: string
+          description: The Unique User ID
+        - in: body
+          name: body
+          description: Update Single Entry Details
+          schema:
+            type: object
+            properties:
+              id:
+                type: number
+              message:
+                type: string
+              picture:
+                type: string
+              pictureSmall:
+                type: string
+              pictureMedium:
+                type: string
+              pictureStored:
+                type: string
+              timestamp:
+                type: number
+              _isFavourite:
+                type: boolean
+            example:
+              id: some_entry_id
+              message: some_message
+              picture: url
+              pictureSmall: pictureSmall
+              pictureMedium: pictureMedium
+              pictureStored: pictureStored
+              timestamp: 1223333
+              _isFavourite: true
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              entries:
+                type: object
+                properties: 
+                  _id:
+                    type: string
+                  entries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+                  favoriteEntries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+                  createdAt:
+                    type: number
+        '400':
+          description: error message
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  ':8082/sort-entries':
+    post:
+      tags:
+        - User Service
+      summary: Save Sorted Image List
+      description: Returns sorted image list
+      operationId: sortEntries
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: userToken
+          schema:
+            type: object
+            properties:
+              userToken:
+                type: String
+              images:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    message:
+                      type: string
+                    picture:
+                      type: string
+                    pictureSmall:
+                      type: string
+                    pictureMedium:
+                      type: string
+                    pictureStored:
+                      type: string
+                    timestamp:
+                      type: number
+                    _isFavourite:
+                      type: boolean
+            example:
+              userToken: some_user_id
+              images: [{
+                id: 123456,
+                message: some_message,
+                picture: url,
+                pictureSmall: pictureSmall,
+                pictureMedium: pictureMedium,
+                pictureStored: pictureStored,
+                timestamp: 1223333,
+                _isFavourite: true,
+              },{id: 123456,
+                 message: some_message,
+                 picture: url,
+                 pictureSmall: pictureSmall,
+                 pictureMedium: pictureMedium,
+                 pictureStored: pictureStored,
+                 timestamp: 1223333,
+                 _isFavourite: true,
+                 }]
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              entries:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  favoriteEntries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        message:
+                          type: string
+                        picture:
+                          type: string
+                        pictureSmall:
+                          type: string
+                        pictureMedium:
+                          type: string
+                        pictureStored:
+                          type: string
+                        timestamp:
+                          type: number
+                        _isFavourite:
+                          type: boolean
+        '400':
+          description: error message
+          schema:
+            type: object
+            properties:
+              error:
+                type: string            
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      entries:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            message:
+              type: string
+            picture:
+              type: string
+            pictureSmall:
+              type: string
+            pictureMedium:
+              type: string
+            pictureStored:
+              type: string
+            timestamp:
+              type: number
+            _isFavourite:
+              type: boolean
+      favoriteEntries:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            message:
+              type: string
+            picture:
+              type: string
+            pictureSmall:
+              type: string
+            pictureMedium:
+              type: string
+            pictureStored:
+              type: string
+            timestamp:
+              type: number
+            _isFavourite:
+              type: boolean
+      createdAt:
+        type: number
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
