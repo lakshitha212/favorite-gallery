@@ -29,5 +29,15 @@ with docker
 
 - Exposed port 27017
 
+## redis Info
+
+- Exposed port 6379
+</br> This is for cache operations
+
+
+## Swagger API Doc Info
+
+- Exposed port 8083
+
 ## UI Framework
 - Semantic UI React
