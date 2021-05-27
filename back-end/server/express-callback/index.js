@@ -1,4 +1,4 @@
-module.exports = function makeExpressCallback (controller) {
+module.exports = function makeExpressCallback(controller) {
   return (req, res) => {
     const httpRequest = {
       body: req.body,
@@ -19,6 +19,15 @@ module.exports = function makeExpressCallback (controller) {
         if (httpResponse.headers) {
           res.set(httpResponse.headers)
         }
+        // here you can define period in second, this one is 5 minutes
+        const period = 60 * 5
+        if (req.method == 'GET') {
+          res.set('Cache-control', `public, max-age=${period}`)
+        } else {
+          // for the other requests set strict no caching parameters
+          res.set('Cache-control', `no-store`)
+        }
+
         res.type('json')
         res.status(httpResponse.statusCode).send(httpResponse.body)
       })

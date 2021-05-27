@@ -1,13 +1,13 @@
 import Id from '../Id'
-const USER_COLLECTION = 'tstcol'
+const USER_COLLECTION = 'user'
 export default function makeBackendDB({ makeDb }) {
 
-  async function insert({ id: _id = Id.makeId(), ...testInfo }) {
+  async function insert({ id: _id = Id.makeId(), ...userInfo }) {
     const db = await makeDb()
     const createdAt = Date.now()
     const result = await db
       .collection(USER_COLLECTION)
-      .insertOne({ _id, ...testInfo, createdAt })
+      .insertOne({ _id, ...userInfo, createdAt })
     const { _id: id, ...insertedInfo } = result.ops[0]
     return { id, ...insertedInfo }
   }

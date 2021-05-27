@@ -27,6 +27,7 @@ class Home extends Component {
             photoCount: 0
         };
         this.dragId = '';
+        this.get_user();
     }
 
     componentDidMount = () => {
@@ -57,8 +58,7 @@ class Home extends Component {
         this.setState({
             isLoading: true,
         });
-        await axios.post(`${BACKEND_URL}get-entries`, {
-            userToken: localStorage.getItem("userToken")
+        await axios.get(`${BACKEND_URL}get-entries?userToken=${localStorage.getItem("userToken")}`, {
         }).then((result) => {
             this.setState({
                 isLoading: false,
@@ -67,8 +67,30 @@ class Home extends Component {
                 photoCount: result.data.entries.favoriteEntries.length
             });
 
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                isLoading: false,
+                e
+            });
+        });
+
+    };
+
+    get_user = async () => {
+        this.setState({
+            isLoading: true,
+        });
+        await axios.post(`${BACKEND_URL}get-user`, {
+            userToken: localStorage.getItem("userToken")
+        }).then((result) => {
+            this.setState({
+                isLoading: false,
+                userToken: result.data.user.id
+            });
+
             if (!localStorage.getItem("userToken")) {
-                localStorage.setItem('userToken', result.data.entries.id);
+                localStorage.setItem('userToken', result.data.user.id);
             }
 
         }).catch((e) => {
@@ -80,6 +102,7 @@ class Home extends Component {
         });
 
     };
+
 
     /**
      * 
