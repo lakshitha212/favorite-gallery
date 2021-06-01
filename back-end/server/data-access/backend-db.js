@@ -15,6 +15,9 @@ export default function makeBackendDB({ makeDb }) {
   async function findById({ id: _id }) {
     const db = await makeDb()
     const result = await db.collection(USER_COLLECTION).findOne({ _id })
+    if(!result){
+      throw new Error('User not found')
+    }
     return result
   }
 
