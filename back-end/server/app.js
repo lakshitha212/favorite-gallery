@@ -29,19 +29,16 @@ import {
   fetchFavorites
 } from './controllers'
 import makeCallback from './express-callback'
-
-
 dotenv.config()
 var app = express()
-
+app.use(express.static('public'))
 app.use(cors())
 app.use(compression());
 app.use(bodyParser.json())
 
-app.use(express.static(path.join(__dirname, '../public')))
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use('/', indexRouter)
-
+app.use('/static', express.static('public'))
 app.get('/get-entries', makeCallback(postEntries))
 app.put('/update-entry', makeCallback(postEntry))
 app.post('/sort-entries', makeCallback(rearrangeEntries))
@@ -62,7 +59,8 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+
+  res.status(err.status).send({ error: err.message })
 });
 
 export default app;

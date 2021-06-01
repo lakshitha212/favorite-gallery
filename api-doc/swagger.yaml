@@ -94,7 +94,21 @@ paths:
                   createdAt:
                     type: number
         '400':
-          description: error message
+          description: bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: internal server error
           schema:
             type: object
             properties:
@@ -177,7 +191,21 @@ paths:
                   createdAt:
                     type: number
         '400':
-          description: error message
+          description: bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: internal server error
           schema:
             type: object
             properties:
@@ -188,7 +216,6 @@ paths:
       tags:
         - User Service
       summary: Update User Entry Details
-      description: 
       operationId: updateEntry
       produces:
         - application/json
@@ -286,7 +313,21 @@ paths:
                   createdAt:
                     type: number
         '400':
-          description: error message
+          description: bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: internal server error
           schema:
             type: object
             properties:
@@ -384,7 +425,21 @@ paths:
                         _isFavourite:
                           type: boolean
         '400':
-          description: error message
+          description: bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: internal server error
           schema:
             type: object
             properties:

@@ -4,7 +4,7 @@
  */
 import _ from 'lodash'
 import React, { Component } from "react";
-import { BACKEND_URL } from '../redux/constants'
+import { BACKEND_URL, IMAGE_PATH } from '../redux/constants'
 import '../App.css';
 import { Grid, Header, Card } from 'semantic-ui-react'
 
@@ -123,7 +123,7 @@ class FavoriteSide extends Component {
                                     style={{
                                         height: "200px",
                                         backgroundSize: "cover",
-                                        backgroundImage: `url(${favorite.picture})`,
+                                        backgroundImage: `url(${IMAGE_PATH}${favorite.picture})`,
                                     }}
                                 ></Card.Content>
                             </Card>

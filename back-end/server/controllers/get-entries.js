@@ -1,6 +1,7 @@
 export default function makePostEntries({ getEntries, client }) {
     return async function sendResponse(httpRequest) {
         try {
+
             const { source = {} } = httpRequest.body
             source.ip = httpRequest.ip
             source.browser = httpRequest.headers['User-Agent']
@@ -25,6 +26,7 @@ export default function makePostEntries({ getEntries, client }) {
                     }
                 }
             }
+
 
             const entries = await getEntries(userToken)
             client.set(userToken, JSON.stringify(entries))

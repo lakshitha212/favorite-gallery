@@ -6,7 +6,7 @@ export default function makeGetUser({ getUser }) {
             source.browser = httpRequest.headers['User-Agent']
             if (httpRequest.headers['Referer']) {
                 source.referrer = httpRequest.headers['Referer']
-            }
+            }            
             const user = await getUser(userToken)
 
             return {

@@ -1,15 +1,13 @@
-export default function makeGetUser({ backendDb, callRemoteAPI }) {
+export default function makeGetUser({ backendDb, resizeNsave }) {
     return async function getUser(userToken) {
-        const { REMOTE_ENTRY_URL } = process.env
-        const remote_entries = await callRemoteAPI({ url: REMOTE_ENTRY_URL, method: "GET", json: true })
-
-        const updated_entries = await remote_entries.entries.map(entry => ({ ...entry, _isFavourite: false }))
         if (userToken) {
             return await backendDb.findById({ id: userToken })
         }
-
+        const resizedResponse = []
+        const resizedObj = await resizeNsave()
+        resizedResponse.push(resizedObj)
         return await backendDb.insert({
-            entries: updated_entries,
+            entries: resizedResponse[0],
             favoriteEntries: []
         })
     }

@@ -4,7 +4,7 @@
  */
 import _ from 'lodash'
 import React, { Component } from "react";
-import { BACKEND_URL } from '../redux/constants'
+import { BACKEND_URL, IMAGE_PATH } from '../redux/constants'
 
 import '../App.css';
 import { Grid, Icon, Header, Card, Placeholder } from 'semantic-ui-react'
@@ -135,7 +135,7 @@ class GallerySide extends Component {
                                 <Card.Content
                                     style={{
                                         height: "100px",
-                                        backgroundImage: `url(${card.picture})`,
+                                        backgroundImage: `url(${IMAGE_PATH}${card.picture})`,
                                         backgroundSize: "cover",
                                     }}
                                 ></Card.Content>

@@ -1,4 +1,4 @@
-export default function makeGetEntries({ backendDb, callRemoteAPI }) {
+export default function makeGetEntries({ backendDb }) {
     return async function getEntries(userToken) {
         if (!userToken) {
             throw new Error('User token is required')

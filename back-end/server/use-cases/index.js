@@ -7,13 +7,13 @@ import makeGetFavorites from './get-favorites'
 
 import backendDb from '../data-access'
 
-import { callRemoteAPI } from '../misc/interface'
+import { callRemoteAPI, resizeNsave } from '../misc/interface'
 
 const createTest = makeCreateTest({ backendDb })
-const getEntries = makeGetEntries({ backendDb, callRemoteAPI })
+const getEntries = makeGetEntries({ backendDb })
 const updateEntry = makeUpdateEntry({ backendDb })
 const sortEntries = makeSortEntries({ backendDb })
-const getUser = makeGetUser({ backendDb, callRemoteAPI })
+const getUser = makeGetUser({ backendDb, resizeNsave })
 const getFavorites = makeGetFavorites({ backendDb })
 
 const backendService = Object.freeze({
