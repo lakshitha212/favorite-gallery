@@ -8,6 +8,7 @@ import app from '../app';
 import debugLib from 'debug';
 import http from 'http';
 const debug = debugLib('your-project-name:server');
+import { resizeNsave } from '../misc/interface'
 
 /**
  * Get port from environment and store in Express.
@@ -20,13 +21,20 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer(app, (req, res) => {
+  console.log("sub")
+
+});
 
 /**
  * Listen on provided port, on all network interfaces.
  */
+(async () => {
+  await resizeNsave()
+})().catch(console.error);
 
 server.listen(port);
+console.log('Node server running on port 3000');
 server.on('error', onError);
 server.on('listening', onListening);
 

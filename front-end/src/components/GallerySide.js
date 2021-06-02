@@ -135,7 +135,7 @@ class GallerySide extends Component {
                                 <Card.Content
                                     style={{
                                         height: "100px",
-                                        backgroundImage: `url(${IMAGE_PATH}${card.picture})`,
+                                        backgroundImage: `url(${IMAGE_PATH}${card.id}.jpg)`,
                                         backgroundSize: "cover",
                                     }}
                                 ></Card.Content>

@@ -123,7 +123,7 @@ class FavoriteSide extends Component {
                                     style={{
                                         height: "200px",
                                         backgroundSize: "cover",
-                                        backgroundImage: `url(${IMAGE_PATH}${favorite.picture})`,
+                                        backgroundImage: `url(${IMAGE_PATH}${favorite.id}.jpg)`,
                                     }}
                                 ></Card.Content>
                             </Card>

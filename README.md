@@ -23,6 +23,7 @@ with docker
 
 - Exposed port 8082
   </br> URL : http://localhost:8082/
+  </br> Image list path: ./back-end/server/misc/constant
   </br> Used Clean Architecture of Uncle Bob
 
 ## mongoDB Info

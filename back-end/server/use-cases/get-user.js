@@ -1,13 +1,12 @@
-export default function makeGetUser({ backendDb, resizeNsave }) {
+export default function makeGetUser({ backendDb, IMAGE_LIST }) {
     return async function getUser(userToken) {
         if (userToken) {
             return await backendDb.findById({ id: userToken })
         }
-        const resizedResponse = []
-        const resizedObj = await resizeNsave()
-        resizedResponse.push(resizedObj)
+        const remote_entries = IMAGE_LIST
+
         return await backendDb.insert({
-            entries: resizedResponse[0],
+            entries: remote_entries.entries,
             favoriteEntries: []
         })
     }
