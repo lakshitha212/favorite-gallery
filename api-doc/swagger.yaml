@@ -38,23 +38,16 @@ paths:
                 enum:
                   - from cache
               entries:
-                type: object
-                properties: 
-                  _id:
-                    type: string
-                  favoriteEntries:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                        picture:
-                          type: string
-                        _isFavourite:
-                          type: boolean
-                  createdAt:
-                    type: number
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    picture:
+                      type: string
+                    _isFavourite:
+                      type: boolean
         '400':
           description: bad request
           schema:
