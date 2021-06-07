@@ -1,4 +1,4 @@
-export default function makePostCreateTest({ createTest }) {
+export default function makePostCreateUser({ createUser }) {
     return async function sendResponse(httpRequest) {
         try {
             const { source = {} } = httpRequest.body
@@ -8,7 +8,7 @@ export default function makePostCreateTest({ createTest }) {
                 source.referrer = httpRequest.headers['Referer']
             }
 
-            const test_response = await createTest({ })
+            const user = await createUser()
 
             return {
                 headers: {
@@ -16,7 +16,7 @@ export default function makePostCreateTest({ createTest }) {
                     'Last-Modified': new Date().toUTCString() // Use actual modified date of the entity
                 },
                 statusCode: 201,
-                body: { test_response }
+                body: { user }
             }
         } catch (e) {
             return {

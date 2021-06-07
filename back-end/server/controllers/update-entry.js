@@ -1,4 +1,4 @@
-export default function makePostEntry({ updateEntry }) {
+export default function makePutEntry({ updateEntry }) {
     return async function sendResponse(httpRequest) {
         try {
             const { source = {}, card } = httpRequest.body

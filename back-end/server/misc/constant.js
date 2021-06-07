@@ -1,3 +1,4 @@
+export const CACHED_LABEL = 'entries'
 export const IMAGE_LIST = {
     id: 2270,
     code: "CHhASmTpKjaHyAsSaauThRqMMjWanYkQ",

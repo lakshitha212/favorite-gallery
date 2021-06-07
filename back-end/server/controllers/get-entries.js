@@ -1,4 +1,4 @@
-export default function makePostEntries({ getEntries, client }) {
+export default function makeGetEntries({ client, CACHED_LABEL }) {
     return async function sendResponse(httpRequest) {
         try {
 
@@ -8,11 +8,7 @@ export default function makePostEntries({ getEntries, client }) {
             if (httpRequest.headers['Referer']) {
                 source.referrer = httpRequest.headers['Referer']
             }
-            const userToken = httpRequest.query.userToken
-            if (!userToken) {
-                throw new Error('User token is required')
-            }
-            const cachedData = await client.get(userToken)
+            const cachedData = await client.get(CACHED_LABEL)
             if (cachedData != null) {
                 return {
                     headers: {
@@ -24,22 +20,6 @@ export default function makePostEntries({ getEntries, client }) {
                         entries: JSON.parse(cachedData),
                         meta_data: "from cache"
                     }
-                }
-            }
-
-
-            const entries = await getEntries(userToken)
-            client.set(userToken, JSON.stringify(entries))
-
-            return {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Last-Modified': new Date().toUTCString() // Use actual modified date of the entity
-                },
-                statusCode: 201,
-                body: {
-                    entries: entries,
-                    meta_data: "from server"
                 }
             }
         } catch (e) {

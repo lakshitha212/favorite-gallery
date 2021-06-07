@@ -4,7 +4,7 @@
  */
 import _ from 'lodash'
 import React, { Component } from "react";
-import { BACKEND_URL, IMAGE_PATH } from '../redux/constants'
+import { BACKEND_URL, IMAGE_PATH, LOCAL_STORAGE_KEY } from '../redux/constants'
 
 import '../App.css';
 import { Grid, Icon, Header, Card, Placeholder } from 'semantic-ui-react'
@@ -18,32 +18,31 @@ class GallerySide extends Component {
          * Manage state
          * @param {isLoading} - Simple indicator 
          * @param {card} - Object array. All the images are keep here
-         * @param {favorites} - Object array. All the selected images are keep here
          */
         this.state = {
-            userToken: localStorage.getItem("userToken"),
+            userToken: '',
             isLoading: true,
             cards: [],
-            favorites: []
+            entries: []
         };
         this.dragId = '';
 
     }
 
     componentDidMount = () => {
-        this.get_user();
+        this.get_entries();
     }
 
 
 
     handleClick(event, card) {
         const { addFavoriteHandler } = this.props
-
-        axios.put(`${BACKEND_URL}update-entry?userToken=${localStorage.getItem("userToken")}`, {
+        const { userToken } = this.state
+        axios.put(`${BACKEND_URL}update-entry?userToken=${userToken}`, {
             card: card
         }).then((result) => {
             this.setState(prevState => ({ cards: prevState.cards.map(el => (el.id === card.id ? { ...el, _isFavourite: (card._isFavourite ? false : true) } : el)) }))
-            addFavoriteHandler(result.data.entries, "click")
+            addFavoriteHandler(result.data.entries)
 
         }).catch((e) => {
 
@@ -56,20 +55,16 @@ class GallerySide extends Component {
     }
 
     get_entries = async () => {
-        const { favorites } = this.state
         this.setState({
             isLoading: true,
         });
-        await axios.get(`${BACKEND_URL}get-entries?userToken=${localStorage.getItem("userToken")}`, {
+        await axios.get(`${BACKEND_URL}get-entries`, {
         }).then((result) => {
-            const entryArr = result.data.entries.entries
-            const favoriteArr = favorites
-            const filteredArray = entryArr.map(entry => favoriteArr.find(fav => fav.id === entry.id) || entry);
-
             this.setState({
                 isLoading: false,
-                cards: filteredArray,
+                entries: result.data.entries
             });
+            this.checkUser()
 
         }).catch((e) => {
             console.error(e);
@@ -81,29 +76,59 @@ class GallerySide extends Component {
 
     };
 
+    checkUser = async () => {
+        if (localStorage.key(LOCAL_STORAGE_KEY) && localStorage.getItem(LOCAL_STORAGE_KEY)) {
+            this.setState({
+                userToken: localStorage.getItem(LOCAL_STORAGE_KEY)
+            });
+            this.get_user()
+        } else {
+            this.create_user()
+        }
+    }
+
+    create_user = async () => {
+        this.setState({
+            isLoading: true,
+        });
+        await axios.post(`${BACKEND_URL}create-user`, {
+        }).then((result) => {
+            localStorage.setItem(LOCAL_STORAGE_KEY, result.data.user.id);
+            this.setState({
+                isLoading: false,
+                userToken: result.data.user.id
+            });
+            this.get_user()
+
+        }).catch((e) => {
+            this.setState({
+                isLoading: false,
+                e
+            });
+        });
+
+    }
+
+
     get_user = async () => {
+        const { entries, userToken } = this.state
         const { addFavoriteHandler } = this.props
         this.setState({
             isLoading: true,
         });
-        await axios.post(`${BACKEND_URL}get-user`, {
-            userToken: localStorage.getItem("userToken")
+        await axios.get(`${BACKEND_URL}get-user?userToken=${userToken}`, {
         }).then((result) => {
+            const entryArr = entries
+            const favoriteArr = result.data.user.favoriteEntries
+            const filteredArray = entryArr.map(entry => favoriteArr.find(fav => fav.id === entry.id) || entry);
             this.setState({
                 isLoading: false,
-                userToken: result.data.user.id,
-                favorites: result.data.user.favoriteEntries
+                cards: filteredArray
             });
-
-            if (!localStorage.getItem("userToken")) {
-                localStorage.setItem('userToken', result.data.user.id);
-            }
             addFavoriteHandler(result.data.user)
 
-            this.get_entries();
-
         }).catch((e) => {
-            console.error(e);
+            this.create_user()
             this.setState({
                 isLoading: false,
                 e

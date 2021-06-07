@@ -2,12 +2,12 @@ import Id from '../Id'
 const USER_COLLECTION = 'user'
 export default function makeBackendDB({ makeDb }) {
 
-  async function insert({ id: _id = Id.makeId(), ...userInfo }) {
+  async function insert({ id: _id = Id.makeId() }) {
     const db = await makeDb()
     const createdAt = Date.now()
     const result = await db
       .collection(USER_COLLECTION)
-      .insertOne({ _id, ...userInfo, createdAt })
+      .insertOne({ _id, favoriteEntries: [], createdAt })
     const { _id: id, ...insertedInfo } = result.ops[0]
     return { id, ...insertedInfo }
   }
@@ -15,7 +15,7 @@ export default function makeBackendDB({ makeDb }) {
   async function findById({ id: _id }) {
     const db = await makeDb()
     const result = await db.collection(USER_COLLECTION).findOne({ _id })
-    if(!result){
+    if (!result) {
       throw new Error('User not found')
     }
     return result
@@ -25,18 +25,12 @@ export default function makeBackendDB({ makeDb }) {
     const db = await makeDb()
     const res = await this.findById({ id: _id })
 
-    if(!card._isFavourite && res.favoriteEntries.length===9){
+    if (!card._isFavourite && res.favoriteEntries.length === 9) {
       throw new Error('Your gallery image count exceeded. You can only add images up to 9!')
     }
-    const result = await db.collection(USER_COLLECTION).updateOne(
-      { _id, "entries.id": card.id },
-      { $set: { "entries.$._isFavourite": !card._isFavourite } }
-    )
-
-
     if (card._isFavourite) {
       await db.collection(USER_COLLECTION).updateOne(
-        { _id, "entries.id": card.id },
+        { _id },
         { $pull: { favoriteEntries: { id: card.id } } }
       )
       return await db.collection(USER_COLLECTION).findOne({ _id })

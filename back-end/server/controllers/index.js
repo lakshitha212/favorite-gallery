@@ -1,50 +1,44 @@
-
 import {
-  createTest,
-  getEntries,
   updateEntry,
   sortEntries,
   getUser,
-  getFavorites
+  createUser
 } from '../use-cases'
 
 import notFound from './not-found'
 
 //Redis client
 import { client } from '../misc/redisClient'
+import { CACHED_LABEL } from '../misc/constant'
 
-import makePostCreateTest from './create-test'
-import makePostEntries from './get-entries'
-import makePostEntry from './update-entry'
+import makeGetEntries from './get-entries'
+import makePutEntry from './update-entry'
 import makeSortEntries from './sort-entries'
 import makeGetUser from './get-user'
-import makeGetFavorites from './get-favorites'
+import makePostCreateUser from './create-user'
 
-const postTest = makePostCreateTest({ createTest })
-const postEntries = makePostEntries({ getEntries, client })
-const postEntry = makePostEntry({ updateEntry })
+const getEntries = makeGetEntries({ client, CACHED_LABEL })
+const editEntry = makePutEntry({ updateEntry })
 const rearrangeEntries = makeSortEntries({ sortEntries })
 const readUser = makeGetUser({ getUser })
-const fetchFavorites = makeGetFavorites({ getFavorites })
+const postUser = makePostCreateUser({ createUser })
 
 
 const backendController = Object.freeze({
-  postTest,
-  postEntries,
-  postEntry,
+  getEntries,
+  editEntry,
   rearrangeEntries,
   readUser,
   notFound,
-  fetchFavorites
+  postUser
 })
 
 export default backendController
 export {
-  postTest,
-  postEntries,
-  postEntry,
+  getEntries,
+  editEntry,
   rearrangeEntries,
   readUser,
   notFound,
-  fetchFavorites
+  postUser
 }

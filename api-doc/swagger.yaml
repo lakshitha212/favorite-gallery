@@ -18,58 +18,30 @@ schemes:
   - http
 
 paths:
-  /get-user:
-    post:
+  /get-entries:
+    get:
       tags:
         - User Service
-      summary: Get Single User
-      description: Returns a user object. If cannot find user, this will create and returns a user object
-      operationId: getUser
+      summary: List All Entries
+      description: Returns all entries
+      operationId: getEntries
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: body
-          description: userToken
-          schema:
-            type: object
-            properties:
-              userToken:
-                type: String
-            example:
-              userToken: some_user_id
       responses:
         '201':
           description: successful operation
           schema:
             type: object
             properties:
-              user:
+              meta_data:
+                type: string
+                enum:
+                  - from cache
+              entries:
                 type: object
                 properties: 
                   _id:
                     type: string
-                  entries:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                        message:
-                          type: string
-                        picture:
-                          type: string
-                        pictureSmall:
-                          type: string
-                        pictureMedium:
-                          type: string
-                        pictureStored:
-                          type: string
-                        timestamp:
-                          type: number
-                        _isFavourite:
-                          type: boolean
                   favoriteEntries:
                     type: array
                     items:
@@ -77,18 +49,8 @@ paths:
                       properties:
                         id:
                           type: number
-                        message:
-                          type: string
                         picture:
                           type: string
-                        pictureSmall:
-                          type: string
-                        pictureMedium:
-                          type: string
-                        pictureStored:
-                          type: string
-                        timestamp:
-                          type: number
                         _isFavourite:
                           type: boolean
                   createdAt:
@@ -114,16 +76,16 @@ paths:
             properties:
               error:
                 type: string
-  /get-entries:
+  /get-user:
     get:
       tags:
         - User Service
-      summary: List All User Entries
-      description: Returns all entries with any user id
-      operationId: getEntries
+      summary: Get Single User
+      description: Returns a user object.
+      operationId: getUser
       produces:
         - application/json
-      parameters: 
+      parameters:
         - in: query
           name: userToken
           required: true
@@ -136,37 +98,11 @@ paths:
           schema:
             type: object
             properties:
-              meta_data:
-                type: string
-                enum:
-                  - from cache
-                  - from server
-              entries:
+              user:
                 type: object
                 properties: 
                   _id:
                     type: string
-                  entries:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                        message:
-                          type: string
-                        picture:
-                          type: string
-                        pictureSmall:
-                          type: string
-                        pictureMedium:
-                          type: string
-                        pictureStored:
-                          type: string
-                        timestamp:
-                          type: number
-                        _isFavourite:
-                          type: boolean
                   favoriteEntries:
                     type: array
                     items:
@@ -174,18 +110,8 @@ paths:
                       properties:
                         id:
                           type: number
-                        message:
-                          type: string
                         picture:
                           type: string
-                        pictureSmall:
-                          type: string
-                        pictureMedium:
-                          type: string
-                        pictureStored:
-                          type: string
-                        timestamp:
-                          type: number
                         _isFavourite:
                           type: boolean
                   createdAt:
@@ -211,6 +137,61 @@ paths:
             properties:
               error:
                 type: string
+  /create-user:
+    post:
+      tags:
+        - User Service
+      summary: Create a user
+      description: Returns single user
+      operationId: createUser
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              entries:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  favoriteEntries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        picture:
+                          type: string
+                        _isFavourite:
+                          type: boolean
+                  createdAt:
+                    type: number
+        '400':
+          description: bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '404':
+          description: not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string     
+  
   /update-entry:
     put:
       tags:
@@ -234,28 +215,13 @@ paths:
             properties:
               id:
                 type: number
-              message:
-                type: string
               picture:
                 type: string
-              pictureSmall:
-                type: string
-              pictureMedium:
-                type: string
-              pictureStored:
-                type: string
-              timestamp:
-                type: number
               _isFavourite:
                 type: boolean
             example:
               id: some_entry_id
-              message: some_message
               picture: url
-              pictureSmall: pictureSmall
-              pictureMedium: pictureMedium
-              pictureStored: pictureStored
-              timestamp: 1223333
               _isFavourite: true
       responses:
         '201':
@@ -358,38 +324,18 @@ paths:
                   properties:
                     id:
                       type: number
-                    message:
-                      type: string
                     picture:
                       type: string
-                    pictureSmall:
-                      type: string
-                    pictureMedium:
-                      type: string
-                    pictureStored:
-                      type: string
-                    timestamp:
-                      type: number
                     _isFavourite:
                       type: boolean
             example:
               userToken: some_user_id
               images: [{
                 id: 123456,
-                message: some_message,
                 picture: url,
-                pictureSmall: pictureSmall,
-                pictureMedium: pictureMedium,
-                pictureStored: pictureStored,
-                timestamp: 1223333,
                 _isFavourite: true,
               },{id: 123456,
-                 message: some_message,
                  picture: url,
-                 pictureSmall: pictureSmall,
-                 pictureMedium: pictureMedium,
-                 pictureStored: pictureStored,
-                 timestamp: 1223333,
                  _isFavourite: true,
                  }]
       responses:
@@ -410,18 +356,8 @@ paths:
                       properties:
                         id:
                           type: number
-                        message:
-                          type: string
                         picture:
                           type: string
-                        pictureSmall:
-                          type: string
-                        pictureMedium:
-                          type: string
-                        pictureStored:
-                          type: string
-                        timestamp:
-                          type: number
                         _isFavourite:
                           type: boolean
         '400':
@@ -451,27 +387,6 @@ definitions:
     properties:
       id:
         type: string
-      entries:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: number
-            message:
-              type: string
-            picture:
-              type: string
-            pictureSmall:
-              type: string
-            pictureMedium:
-              type: string
-            pictureStored:
-              type: string
-            timestamp:
-              type: number
-            _isFavourite:
-              type: boolean
       favoriteEntries:
         type: array
         items:
@@ -479,18 +394,8 @@ definitions:
           properties:
             id:
               type: number
-            message:
-              type: string
             picture:
               type: string
-            pictureSmall:
-              type: string
-            pictureMedium:
-              type: string
-            pictureStored:
-              type: string
-            timestamp:
-              type: number
             _isFavourite:
               type: boolean
       createdAt:

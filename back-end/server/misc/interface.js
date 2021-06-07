@@ -2,7 +2,8 @@ const request = require('request');
 const fs = require('fs')
 const sharp = require('sharp')
 sharp.cache(true);
-import { IMAGE_LIST } from './constant'
+import { IMAGE_LIST, CACHED_LABEL } from './constant'
+import { client } from './redisClient'
 
 export async function callRemoteAPI(options) {
     return new Promise(resolve => {
@@ -29,4 +30,12 @@ export async function resizeNsave() {
         })
 
     }))
+}
+
+export async function cached() {
+    const cachedData = await client.get(CACHED_LABEL)
+    if (cachedData === null) {
+        const entries = await resizeNsave()
+        client.set(CACHED_LABEL, JSON.stringify(entries))
+    }
 }

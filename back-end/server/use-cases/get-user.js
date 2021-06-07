@@ -1,13 +1,8 @@
-export default function makeGetUser({ backendDb, IMAGE_LIST }) {
+export default function makeGetUser({ backendDb }) {
     return async function getUser(userToken) {
-        if (userToken) {
-            return await backendDb.findById({ id: userToken })
+        if (!userToken) {
+            throw new Error('User token is required')
         }
-        const remote_entries = IMAGE_LIST
-
-        return await backendDb.insert({
-            entries: remote_entries.entries,
-            favoriteEntries: []
-        })
+        return await backendDb.findById({ id: userToken })
     }
 }

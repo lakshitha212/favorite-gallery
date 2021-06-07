@@ -1,4 +1,3 @@
-
 //Create Redis client on Redis port
 const redis = require("redis");
 const { promisify } = require("util");
